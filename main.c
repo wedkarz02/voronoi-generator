@@ -21,24 +21,7 @@ void fill_image(uint32_t color) {
     }
 }
 
-void create_ppm_header(const char *file_path) {
-    FILE *file = fopen(file_path, "wb");
-
-    if (file == NULL) {
-        fprintf(stderr, "ERROR: Could not open the %s file: %s\n",
-            file_path,
-            strerror(errno)
-        );
-        exit(1);
-    }
-
-    fprintf(file, "P6\n%d %d 255\n", WIDTH, HEIGHT);
-    fclose(file);
-}
-
 void create_ppm_image(const char *file_path) {
-    // create_ppm_header(file_path);
-
     FILE *file = fopen(file_path, "wb");
 
     if (file == NULL) {
