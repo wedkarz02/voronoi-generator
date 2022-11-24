@@ -4,8 +4,8 @@
 #include <errno.h>
 #include <string.h>
 
-#define WIDTH 1280
-#define HEIGHT 720
+#define WIDTH 600
+#define HEIGHT 400
 
 //                  0xAABBGGRR
 #define COLOR_RED   0xFF0000FF
@@ -14,12 +14,21 @@
 
 static uint32_t image[HEIGHT][WIDTH];
 
+typedef struct {
+    int x;
+    int y;
+} Point;
+
 void fill_image(uint32_t color) {
     for (size_t y = 0; y < HEIGHT; y++) {
         for (size_t x = 0; x < WIDTH; x++) {
             image[y][x] = color;
         }
     }
+}
+
+void fill_circle(Point point, uint16_t radius) {
+    // TODO (wedkarz): implement this function
 }
 
 void create_ppm_image(const char *file_path) {
