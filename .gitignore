@@ -1,3 +1,6 @@
 
 # Compiled executable file 
 voronoi
+
+# Generated image output
+generated-voronoi.ppm
