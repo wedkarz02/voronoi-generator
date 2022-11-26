@@ -17,7 +17,7 @@ static uint32_t image[HEIGHT][WIDTH];
 typedef struct {
     int x;
     int y;
-} Point;
+} Node;
 
 void fill_image(uint32_t color) {
     for (size_t y = 0; y < HEIGHT; y++) {
@@ -27,8 +27,25 @@ void fill_image(uint32_t color) {
     }
 }
 
-void fill_circle(Point point, uint16_t radius) {
-    // TODO (wedkarz): implement this function
+void fill_circle(Node node, int radius, uint32_t color) {
+    int x0 = node.x - radius;
+    int y0 = node.y - radius;
+    int x1 = node.x + radius;
+    int y1 = node.y + radius;
+
+    for (int x = x0; x < x1; x++) {
+        if (x >= 0 && x < WIDTH) {
+            for (int y = y0; y < y1; y++) {
+                if (y >= 0 && y < HEIGHT) {
+                    int dx = node.x - x;
+                    int dy = node.y - y;
+                    if (dx*dx + dy*dy <= radius*radius) {
+                        image[y][x] = color;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void create_ppm_image(const char *file_path) {
@@ -60,7 +77,13 @@ void create_ppm_image(const char *file_path) {
 }
 
 int main() {
+    Node test_node;
+    test_node.x = 128;
+    test_node.y = 128;
+
     fill_image(COLOR_BLUE);
+    fill_circle(test_node, 10, COLOR_RED);
+
     create_ppm_image("generated-voronoi.ppm");
     return 0;
 }
