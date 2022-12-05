@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <errno.h>
 #include <string.h>
+#include <math.h>
 #include <time.h>
 
 #define WIDTH 600
@@ -87,6 +88,12 @@ void create_ppm_image(const char *file_path) {
     }
 
     fclose(file);
+}
+
+int calculate__square_distance(int x, int y, Node node) {
+    int x_distance = abs(node.x - x);
+    int y_distance = abs(node.y - y);
+    return x_distance*x_distance + y_distance+y_distance;
 }
 
 int find_closest_node(int x, int y) {
