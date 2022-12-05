@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <limits.h>
 #include <errno.h>
 #include <string.h>
 #include <time.h>
@@ -86,6 +87,13 @@ void create_ppm_image(const char *file_path) {
     }
 
     fclose(file);
+}
+
+int find_closest_node(int x, int y) {
+    Node closest = { INT_MAX, INT_MAX };
+    for (size_t i = 0; i < NODE_COUNT; i++) {
+        puts("not implemented yet");
+    }
 }
 
 int main() {
