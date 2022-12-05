@@ -96,11 +96,15 @@ int calculate__square_distance(int x, int y, Node node) {
     return x_distance*x_distance + y_distance+y_distance;
 }
 
-int find_closest_node(int x, int y) {
+Node find_closest_node(int x, int y) {
     Node closest = { INT_MAX, INT_MAX };
     for (size_t i = 0; i < NODE_COUNT; i++) {
-        puts("not implemented yet");
+        if (calculate__square_distance(x, y, nodes[i]) < calculate__square_distance(x, y, closest)) {
+            closest = nodes[i];
+        }
     }
+
+    return closest
 }
 
 int main() {
