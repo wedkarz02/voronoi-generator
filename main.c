@@ -18,6 +18,8 @@
 #define COLOR_GREEN 0xFF00FF00
 #define COLOR_BLUE  0xFFFF0000
 
+#define COLOR_BG    0xFF2E2E2E
+
 typedef struct {
     int x;
     int y;
@@ -104,11 +106,11 @@ Node find_closest_node(int x, int y) {
         }
     }
 
-    return closest
+    return closest;
 }
 
 int main() {
-    fill_image(COLOR_BLUE);
+    fill_image(COLOR_BG);
 
     srand((unsigned)time(NULL));
     generate_nodes();
