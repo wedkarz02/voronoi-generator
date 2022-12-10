@@ -10,7 +10,7 @@
 #define WIDTH 600
 #define HEIGHT 400
 
-#define NODE_COUNT 15
+#define NODE_COUNT 2
 #define NODE_RADIUS 3
 
 //                  0xAABBGGRR
@@ -109,16 +109,18 @@ void create_ppm_image(const char *file_path) {
     fclose(file);
 }
 
-int calculate__square_distance(int x, int y, Node node) {
+int calculate_distance(int x, int y, Node node) {
     int x_distance = abs(node.x - x);
     int y_distance = abs(node.y - y);
-    return x_distance*x_distance + y_distance+y_distance;
+    return sqrt(x_distance*x_distance + y_distance+y_distance);
 }
 
 Node find_closest_node(int x, int y) {
-    Node closest = { INT_MAX, INT_MAX, PALETTE[0] };
+    Node closest = nodes[0];
     for (size_t i = 0; i < NODE_COUNT; i++) {
-        if (calculate__square_distance(x, y, nodes[i]) < calculate__square_distance(x, y, closest)) {
+        int closest_distance = calculate_distance(x, y, closest);
+        int current_distance = calculate_distance(x, y, nodes[i]);
+        if (current_distance < closest_distance) {
             closest = nodes[i];
         }
     }
@@ -126,11 +128,20 @@ Node find_closest_node(int x, int y) {
     return closest;
 }
 
+void fill_voronoi() {
+    for (size_t y = 0; y < HEIGHT; y++) {
+        for (size_t x = 0; x < WIDTH; x++) {
+            image[y][x] = find_closest_node(x, y).color;
+        }
+    }
+}
+
 int main() {
     fill_image(COLOR_BG);
 
     srand((unsigned)time(NULL));
     generate_nodes();
+    fill_voronoi();
 
     for (size_t i = 0; i < NODE_COUNT; i++) {
         fill_circle(nodes[i], NODE_RADIUS, COLOR_RED);
