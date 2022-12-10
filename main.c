@@ -20,9 +20,25 @@
 
 #define COLOR_BG    0xFF2E2E2E
 
+// Color palette
+#define COLOR_GREY  0xFF272727
+#define COLOR_LBLUE 0xFFAA502B
+#define COLOR_LPINK 0xFFE59FFF
+#define COLOR_BEIGE 0xFFD4D4FF
+#define COLOR_DPINK 0xFF8D85FF
+
+static const int PALETTE[] = {
+    COLOR_GREY,
+    COLOR_LBLUE,
+    COLOR_LPINK,
+    COLOR_BEIGE,
+    COLOR_DPINK
+};
+
 typedef struct {
     int x;
     int y;
+    int color;
 } Node;
 
 static uint32_t image[HEIGHT][WIDTH];
@@ -32,6 +48,7 @@ void generate_nodes() {
     for (size_t i = 0; i < NODE_COUNT; i++) {
         nodes[i].x = rand() % WIDTH;
         nodes[i].y = rand() % HEIGHT;
+        nodes[i].color = PALETTE[i % 5]; 
     }
 }
 
@@ -99,7 +116,7 @@ int calculate__square_distance(int x, int y, Node node) {
 }
 
 Node find_closest_node(int x, int y) {
-    Node closest = { INT_MAX, INT_MAX };
+    Node closest = { INT_MAX, INT_MAX, PALETTE[0] };
     for (size_t i = 0; i < NODE_COUNT; i++) {
         if (calculate__square_distance(x, y, nodes[i]) < calculate__square_distance(x, y, closest)) {
             closest = nodes[i];
