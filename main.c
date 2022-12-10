@@ -7,10 +7,10 @@
 #include <math.h>
 #include <time.h>
 
-#define WIDTH 600
+#define WIDTH 800
 #define HEIGHT 400
 
-#define NODE_COUNT 2
+#define NODE_COUNT 3
 #define NODE_RADIUS 3
 
 //                  0xAABBGGRR
@@ -27,7 +27,7 @@
 #define COLOR_BEIGE 0xFFD4D4FF
 #define COLOR_DPINK 0xFF8D85FF
 
-static const int PALETTE[] = {
+static const uint32_t PALETTE[] = {
     COLOR_GREY,
     COLOR_LBLUE,
     COLOR_LPINK,
@@ -38,7 +38,7 @@ static const int PALETTE[] = {
 typedef struct {
     int x;
     int y;
-    int color;
+    uint32_t color;
 } Node;
 
 static uint32_t image[HEIGHT][WIDTH];
@@ -60,18 +60,18 @@ void fill_image(uint32_t color) {
     }
 }
 
-void fill_circle(Node node, int radius, uint32_t color) {
-    int x0 = node.x - radius;
-    int y0 = node.y - radius;
-    int x1 = node.x + radius;
-    int y1 = node.y + radius;
+void fill_circle(Node *node, int radius, uint32_t color) {
+    int x0 = node->x - radius;
+    int y0 = node->y - radius;
+    int x1 = node->x + radius;
+    int y1 = node->y + radius;
 
     for (int x = x0; x < x1; x++) {
         if (x >= 0 && x < WIDTH) {
             for (int y = y0; y < y1; y++) {
                 if (y >= 0 && y < HEIGHT) {
-                    int dx = node.x - x;
-                    int dy = node.y - y;
+                    int dx = node->x - x;
+                    int dy = node->y - y;
                     if (dx*dx + dy*dy <= radius*radius) {
                         image[y][x] = color;
                     }
@@ -109,17 +109,17 @@ void create_ppm_image(const char *file_path) {
     fclose(file);
 }
 
-int calculate_distance(int x, int y, Node node) {
-    int x_distance = abs(node.x - x);
-    int y_distance = abs(node.y - y);
-    return sqrt(x_distance*x_distance + y_distance+y_distance);
+int calculate_distance(int x, int y, Node *node) {
+    int dx = abs(node->x - x);
+    int dy = abs(node->y - y);
+    return sqrt(dx*dx + dy+dy);
 }
 
 Node find_closest_node(int x, int y) {
     Node closest = nodes[0];
-    for (size_t i = 0; i < NODE_COUNT; i++) {
-        int closest_distance = calculate_distance(x, y, closest);
-        int current_distance = calculate_distance(x, y, nodes[i]);
+    for (size_t i = 1; i < NODE_COUNT; i++) {
+        int closest_distance = calculate_distance(x, y, &closest);
+        int current_distance = calculate_distance(x, y, &nodes[i]);
         if (current_distance < closest_distance) {
             closest = nodes[i];
         }
@@ -144,7 +144,7 @@ int main() {
     fill_voronoi();
 
     for (size_t i = 0; i < NODE_COUNT; i++) {
-        fill_circle(nodes[i], NODE_RADIUS, COLOR_RED);
+        fill_circle(&nodes[i], NODE_RADIUS, COLOR_RED);
     }
 
     create_ppm_image("generated-voronoi.ppm");
