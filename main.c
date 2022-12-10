@@ -7,33 +7,47 @@
 #include <math.h>
 #include <time.h>
 
-#define WIDTH 800
-#define HEIGHT 400
+#define WIDTH 1280
+#define HEIGHT 720
 
-#define NODE_COUNT 3
-#define NODE_RADIUS 3
+#define NODE_COUNT 50
+#define NODE_RADIUS 2
 
-//                  0xAABBGGRR
-#define COLOR_RED   0xFF0000FF
-#define COLOR_GREEN 0xFF00FF00
-#define COLOR_BLUE  0xFFFF0000
+//                    0xAABBGGRR
+#define COLOR_RED     0xFF0000FF
+#define COLOR_GREEN   0xFF00FF00
+#define COLOR_BLUE    0xFFFF0000
 
-#define COLOR_BG    0xFF2E2E2E
+#define COLOR_BG      0xFF2E2E2E
+#define COLOR_WHITE   0xFFFFFFFF
+#define COLOR_BLACK   0xFF000000
 
 // Color palette
-#define COLOR_GREY  0xFF272727
-#define COLOR_LBLUE 0xFFAA502B
-#define COLOR_LPINK 0xFFE59FFF
-#define COLOR_BEIGE 0xFFD4D4FF
-#define COLOR_DPINK 0xFF8D85FF
+#define COLOR_DPINK   0xFF42019E
+#define COLOR_LPINK   0xFF4F3ED5
+#define COLOR_DORANGE 0xFF436DF4
+#define COLOR_LORANGE 0xFF61AEFD
+#define COLOR_BEIGE   0xFF8BE0FE
+#define COLOR_YELLOW  0xFF98F5E6
+#define COLOR_LGREEN  0xFFA4DDAB
+#define COLOR_MINT    0xFFA5C266
+#define COLOR_LBLUE   0xFFBD8832
+#define COLOR_PURPLE  0xFFA24F5E
 
 static const uint32_t PALETTE[] = {
-    COLOR_GREY,
-    COLOR_LBLUE,
+    COLOR_DPINK,
     COLOR_LPINK,
+    COLOR_DORANGE,
+    COLOR_LORANGE,
     COLOR_BEIGE,
-    COLOR_DPINK
+    COLOR_YELLOW,
+    COLOR_LGREEN,
+    COLOR_MINT,
+    COLOR_LBLUE,
+    COLOR_PURPLE
 };
+
+#define PALETTE_COUNT (sizeof(PALETTE) / sizeof(*PALETTE))
 
 typedef struct {
     int x;
@@ -109,29 +123,25 @@ void create_ppm_image(const char *file_path) {
     fclose(file);
 }
 
-int calculate_distance(int x, int y, Node *node) {
-    int dx = abs(node->x - x);
-    int dy = abs(node->y - y);
-    return sqrt(dx*dx + dy+dy);
-}
-
-Node find_closest_node(int x, int y) {
-    Node closest = nodes[0];
-    for (size_t i = 1; i < NODE_COUNT; i++) {
-        int closest_distance = calculate_distance(x, y, &closest);
-        int current_distance = calculate_distance(x, y, &nodes[i]);
-        if (current_distance < closest_distance) {
-            closest = nodes[i];
-        }
-    }
-
-    return closest;
+int calculate_square_distance(int x1, int y1, int x2, int y2) {
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+    return dx*dx + dy*dy;
 }
 
 void fill_voronoi() {
-    for (size_t y = 0; y < HEIGHT; y++) {
-        for (size_t x = 0; x < WIDTH; x++) {
-            image[y][x] = find_closest_node(x, y).color;
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
+            int closest_idx = 0;
+            for (size_t i = 1; i < NODE_COUNT; i++) {
+                int current_distance = calculate_square_distance(nodes[i].x, nodes[i].y, x, y);
+                int closest_distance = calculate_square_distance(nodes[closest_idx].x, nodes[closest_idx].y, x, y);
+                
+                if (current_distance < closest_distance) {
+                    closest_idx = i;
+                }
+            }
+            image[y][x] = PALETTE[closest_idx % PALETTE_COUNT];
         }
     }
 }
@@ -144,7 +154,7 @@ int main() {
     fill_voronoi();
 
     for (size_t i = 0; i < NODE_COUNT; i++) {
-        fill_circle(&nodes[i], NODE_RADIUS, COLOR_RED);
+        fill_circle(&nodes[i], NODE_RADIUS, COLOR_WHITE);
     }
 
     create_ppm_image("generated-voronoi.ppm");
