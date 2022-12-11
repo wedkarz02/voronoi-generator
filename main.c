@@ -52,7 +52,6 @@ static const uint32_t PALETTE[] = {
 typedef struct {
     int x;
     int y;
-    uint32_t color;
 } Node;
 
 static uint32_t image[HEIGHT][WIDTH];
@@ -62,7 +61,6 @@ void generate_nodes() {
     for (size_t i = 0; i < NODE_COUNT; i++) {
         nodes[i].x = rand() % WIDTH;
         nodes[i].y = rand() % HEIGHT;
-        nodes[i].color = PALETTE[i % 5]; 
     }
 }
 
