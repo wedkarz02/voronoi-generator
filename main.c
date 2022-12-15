@@ -4,7 +4,6 @@
 #include <limits.h>
 #include <errno.h>
 #include <string.h>
-#include <math.h>
 #include <time.h>
 
 #define WIDTH 1280
